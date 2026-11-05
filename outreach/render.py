@@ -12,6 +12,12 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 ROOT = Path(__file__).resolve().parent.parent
 
 
+class Lead(dict):
+    """Missing lead fields render as empty text; config typos still raise errors."""
+    def __missing__(self, key):
+        return ""
+
+
 def load_config(path: str | Path = ROOT / "config" / "company.toml") -> dict:
     with open(path, "rb") as f:
         return tomllib.load(f)
@@ -20,7 +26,7 @@ def load_config(path: str | Path = ROOT / "config" / "company.toml") -> dict:
 def render(template: str, lead: dict, config: dict, templates_dir: Path = ROOT / "templates") -> tuple[str, str]:
     env = Environment(loader=FileSystemLoader(templates_dir), undefined=StrictUndefined,
                       trim_blocks=False, keep_trailing_newline=True)
-    lead = {f: "" for f in FIELDS} | {k: v or "" for k, v in lead.items()}
+    lead = Lead({f: "" for f in FIELDS} | {k: v or "" for k, v in lead.items()})
     text = env.get_template(f"{template}.j2").render(lead=lead, **config).lstrip()
     first, _, body = text.partition("\n")
     if not first.startswith("Subject:"):

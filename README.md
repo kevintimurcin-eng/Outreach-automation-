@@ -1,62 +1,42 @@
-# Outreach automation – architecture firm introductions
+# Outreach automation – Nordic Group introductions
 
-Find prospective clients (property developers, hotels, public bodies…), look up
-decision-maker emails, and send a personalised introduction email about your studio.
+Personalised introduction emails from Nordic Group (Marbella) to developers, investors,
+agencies and hotels – created as **Gmail drafts** so every email is reviewed before it goes out.
+No third-party lead platforms are used.
 
-```
-find companies ──► find emails ──► review leads.csv ──► render to outbox/ ──► review ──► send
-(Google Places)     (Hunter.io)     (Excel/Sheets)       (.eml files)                    (SMTP or Gmail drafts)
-```
+## How it works (with Claude + the Gmail connector)
+1. Ask Claude to research companies in a category, e.g. *"property developers on the Costa del Sol"*.
+   Claude uses web search and only uses **general contact emails published by the company itself**
+   (info@, contact@) – it never guesses personal addresses.
+2. Claude writes a personal opening line and three tailored value points per company,
+   renders `templates/introduction.html.j2`, and puts each email in your **Gmail drafts**.
+3. You review, edit and press send in Gmail. Log replies/opt-outs in `data/suppression.csv`.
 
-## Setup
+## Templates
+| File | Use |
+|---|---|
+| `templates/introduction.html.j2` | Designed HTML introduction (black header, sand accents, CTA button) |
+| `templates/introduction.j2` | Plain-text introduction, adapts by `segment` |
+| `templates/followup.j2` | Short follow-up one week later |
+
+Per-lead fields for the HTML template: `subject`, `headline`, `greeting`, `personal_line`,
+`offer_intro`, `points` (list of 3 title/text pairs), `ask`. All have sensible defaults
+except `personal_line`. Firm details live in `config/company.toml`.
+
+The HTML email uses no remote images or web fonts – this keeps it out of spam/promotions
+folders and renders the same in Gmail, Outlook and Apple Mail.
+
+## Local CLI (optional)
 ```bash
-python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env            # add your API keys (local use only)
-```
-Edit **`config/company.toml`** with your firm's name, specialties, portfolio link,
-sender details and postal address. Edit the wording in **`templates/`**.
-
-## Usage
-```bash
-# 1. Find target companies (any wording works, e.g. "real estate investors Costa del Sol")
-python -m outreach find-companies "property developers in Marbella" --segment developer
-
-# 2. Find decision-maker emails for those companies' websites
-python -m outreach find-emails --max-domains 10
-
-# 2b. Or import contacts from another platform (LinkedIn Sales Navigator, CRM, trade-fair list…)
-python -m outreach import my_export.csv
-
-# 3. Preview, then write every email to outbox/ for review
+python -m outreach import my_contacts.csv
 python -m outreach preview --template introduction
-python -m outreach render  --template introduction --segment developer
-
-# 4. Send (dry run unless --confirm). Spreads sends 20–60 s apart, max OUTREACH_DAILY_LIMIT.
-python -m outreach send --confirm
+python -m outreach render  --template introduction     # writes .eml files to outbox/
+python -m pytest
 ```
-Use `--template followup` a week later for those who didn't reply.
-
-Leads live in `data/leads.csv` (columns: email, first_name, last_name, position,
-company, domain, city, segment, source, notes). Anyone who replies "unsubscribe"
-goes in `data/suppression.csv` and is never emailed again.
-
-### Templates
-`templates/*.j2` are Jinja2. The first line is `Subject: …`. Available fields:
-`lead.*` (any CSV column), `company.*`, `sender.*`, `compliance.*` from `company.toml`.
-The introduction adapts its pitch by `lead.segment` (`developer`, `investor`, `hospitality`, `public`, other).
-
-### Using it with Claude
-In a Claude session with the Gmail connector, ask Claude to *"render the outbox and
-create Gmail drafts"* – you then review and send from Gmail yourself.
 
 ## Rules for cold email (please read)
-- **Spain (LSSI art. 21) and Denmark require prior consent** for commercial email, even
-  to businesses. Since you are based in Spain, the safest route is to email generic company addresses
-  (info@, contact@) or people who have given consent. In Sweden and most other EU countries, B2B email to a work address is
-  usually allowed under GDPR legitimate interest if it is relevant to the person's role.
-  Check the rules for the recipient's country; when in doubt, use generic company
-  addresses (info@, contact@) or get legal advice.
-- Always identify your firm, include a postal address and an easy opt-out (built in).
-- Only store business contact data, record its `source`, and delete leads you don't use.
-- Keep volumes low (≤30/day per mailbox) to protect your domain's reputation.
+- **Spain (LSSI art. 21)** generally requires prior consent for commercial email, also B2B.
+  We therefore write only to generic company inboxes, keep it a genuine one-to-one business
+  introduction, and always include the postal address and an opt-out line.
+- Keep volumes low (a handful per day), and never email anyone in `data/suppression.csv` again.

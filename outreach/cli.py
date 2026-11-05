@@ -14,37 +14,6 @@ DEFAULT_LEADS = ROOT / "data" / "leads.csv"
 DEFAULT_SUPPRESS = ROOT / "data" / "suppression.csv"
 
 
-def cmd_find_companies(a):
-    from .sources.google_places import search_companies
-    found = search_companies(a.query, segment=a.segment, max_results=a.max)
-    merged = L.merge(L.read_leads(a.leads), found)
-    L.write_leads(a.leads, merged)
-    print(f"Found {len(found)} companies for {a.query!r}; {len(merged)} rows in {a.leads}")
-
-
-def cmd_find_emails(a):
-    from .sources.hunter import find_emails
-    rows = L.read_leads(a.leads)
-    domains = sorted({r["domain"] for r in rows if r["domain"] and not r["email"]})[: a.max_domains]
-    new = []
-    for d in domains:
-        try:
-            hits = find_emails(d, limit=a.per_domain)
-        except Exception as e:  # keep going on one bad domain
-            print(f"  {d}: error {e}", file=sys.stderr)
-            continue
-        company_row = next((r for r in rows if r["domain"] == d), {})
-        for h in hits:
-            h.setdefault("segment", company_row.get("segment", ""))
-            h["segment"] = h.get("segment") or company_row.get("segment", "")
-            h["city"] = company_row.get("city", "")
-            h["company"] = h["company"] or company_row.get("company", "")
-        print(f"  {d}: {len(hits)} contacts")
-        new += hits
-    L.write_leads(a.leads, L.merge(rows, new))
-    print(f"Added {len(new)} contacts to {a.leads}")
-
-
 def cmd_import(a):
     merged = L.merge(L.read_leads(a.leads), L.read_leads(a.csv))
     L.write_leads(a.leads, merged)
@@ -91,17 +60,6 @@ def main(argv=None):
     p.add_argument("--suppress", default=DEFAULT_SUPPRESS)
     p.add_argument("--config", default=ROOT / "config" / "company.toml")
     sub = p.add_subparsers(dest="cmd", required=True)
-
-    s = sub.add_parser("find-companies", help="Search Google Places for target companies")
-    s.add_argument("query", help='e.g. "property developers in Marbella"')
-    s.add_argument("--segment", default="", help="developer | investor | hospitality | public | ...")
-    s.add_argument("--max", type=int, default=20)
-    s.set_defaults(fn=cmd_find_companies)
-
-    s = sub.add_parser("find-emails", help="Look up decision-maker emails with Hunter.io")
-    s.add_argument("--max-domains", type=int, default=10)
-    s.add_argument("--per-domain", type=int, default=3)
-    s.set_defaults(fn=cmd_find_emails)
 
     s = sub.add_parser("import", help="Merge a CSV (e.g. LinkedIn/CRM export) into leads")
     s.add_argument("csv")

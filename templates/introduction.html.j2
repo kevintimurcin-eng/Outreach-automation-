@@ -1,0 +1,70 @@
+{#- Designed HTML version of the introduction. Line 1 = subject, then the HTML.
+    Email-safe: tables + inline styles, no web fonts, no remote images (better inbox placement). -#}
+Subject: {{ lead.subject or (company.name ~ " × " ~ (lead.company or "your next project")) }}
+<!doctype html>
+<html><body style="margin:0;padding:0;background:#f4f1ec;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1ec;padding:24px 12px;">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-collapse:collapse;font-family:Helvetica,Arial,sans-serif;color:#2b2b2b;">
+
+  <!-- Header -->
+  <tr><td style="background:#1f1f1f;padding:28px 40px;">
+    <div style="font-size:20px;letter-spacing:6px;color:#ffffff;font-weight:300;">NORDIC&nbsp;GROUP</div>
+    <div style="font-size:11px;letter-spacing:2px;color:#c8b89a;margin-top:6px;text-transform:uppercase;">Design &middot; Architecture &middot; Construction &middot; Marbella</div>
+  </td></tr>
+
+  <!-- Hero line -->
+  <tr><td style="padding:36px 40px 8px 40px;">
+    <div style="font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:34px;color:#1f1f1f;">{{ lead.headline or "We build bridges between dreams &amp; reality." }}</div>
+    <div style="width:48px;height:2px;background:#c8b89a;margin-top:18px;font-size:0;line-height:0;">&nbsp;</div>
+  </td></tr>
+
+  <!-- Body -->
+  <tr><td style="padding:20px 40px 8px 40px;font-size:15px;line-height:24px;">
+    <p style="margin:0 0 16px 0;">{{ lead.greeting or ("Dear " ~ (lead.first_name or ((lead.company ~ " team") if lead.company else "Sir or Madam"))) }},</p>
+    <p style="margin:0 0 16px 0;">My name is {{ sender.name }}, {{ sender.title }} of {{ company.name }} &ndash; a Marbella studio for Scandinavian-inspired architecture, interior design and construction, with our own in-house build, kitchen and carpentry teams.</p>
+    <p style="margin:0 0 16px 0;">{{ lead.personal_line }}</p>
+    <p style="margin:0 0 8px 0;">{{ lead.offer_intro or "Here is where we could help:" }}</p>
+  </td></tr>
+
+  <!-- Value points -->
+  <tr><td style="padding:0 40px 8px 40px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+    {% for title, text in (lead.points or [
+        ("One partner, design to keys", "Concept, architecture, permits and construction under one roof &ndash; one budget, one timeline."),
+        ("Bespoke kitchens &amp; carpentry", "Made in our own workshop, so details and lead times stay in our hands."),
+        ("Scandinavian calm, Andalusian light", "Timeless interiors that photograph well and sell faster."),
+    ]) %}
+      <tr><td style="padding:12px 0;border-top:1px solid #ece6dc;">
+        <div style="font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#8a7a5c;font-weight:bold;">{{ title }}</div>
+        <div style="font-size:14px;line-height:22px;color:#4a4a4a;margin-top:4px;">{{ text }}</div>
+      </td></tr>
+    {% endfor %}
+    </table>
+  </td></tr>
+
+  <!-- CTA -->
+  <tr><td style="padding:24px 40px 8px 40px;font-size:15px;line-height:24px;">
+    <p style="margin:0 0 20px 0;">{{ lead.ask or "Would you be open to a short 20-minute coffee or call in the coming weeks? I would be glad to show you a few recent projects in person." }}</p>
+    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+      <td style="background:#1f1f1f;"><a href="{{ company.portfolio_url }}" style="display:inline-block;padding:13px 26px;font-size:13px;letter-spacing:2px;color:#ffffff;text-decoration:none;text-transform:uppercase;">See our projects</a></td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Signature -->
+  <tr><td style="padding:28px 40px 32px 40px;font-size:14px;line-height:22px;">
+    Warm regards,<br>
+    <span style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:#1f1f1f;">{{ sender.name }}</span><br>
+    <span style="color:#8a7a5c;">{{ sender.title }}, {{ company.name }}</span><br>
+    <a href="tel:{{ sender.phone | replace(' ', '') }}" style="color:#2b2b2b;text-decoration:none;">{{ sender.phone }}</a> &middot;
+    <a href="{{ company.website }}" style="color:#2b2b2b;">nordicgroup.es</a>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="background:#f8f6f2;padding:18px 40px;font-size:11px;line-height:17px;color:#8c8c8c;">
+    {{ compliance.postal_address }}<br>
+    {{ compliance.unsubscribe_text }}
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>

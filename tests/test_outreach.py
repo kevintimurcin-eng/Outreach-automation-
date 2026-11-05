@@ -3,7 +3,6 @@ from pathlib import Path
 from outreach import leads as L
 from outreach.render import build_message, load_config, render
 from outreach.send import send_outbox, write_outbox
-from outreach.sources.google_places import domain_of
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -46,5 +45,10 @@ def test_outbox_roundtrip_and_dry_run(tmp_path):
     assert send_outbox(tmp_path, limit=5)[0].startswith("[dry-run]")
 
 
-def test_domain_of():
-    assert domain_of("https://www.Example.se/kontakt") == "example.se"
+
+def test_html_template_renders_personalised_fields():
+    lead = {"email": "a@x.com", "company": "Acme", "personal_line": "Loved your villa project.",
+            "headline": "Hello Acme"}
+    subject, html = render("introduction.html", lead, load_config())
+    assert "Acme" in subject and "Loved your villa project." in html and "Hello Acme" in html
+    assert "Dear Acme team" in html and "unsubscribe" in html

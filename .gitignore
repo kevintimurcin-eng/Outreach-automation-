@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+outbox/
+data/leads*.csv
+!data/leads.example.csv
+.pytest_cache/

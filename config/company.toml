@@ -1,0 +1,21 @@
+# Your firm's details. Every template can use these as {{ company.<field> }}.
+[company]
+name = "Your Architecture Studio"
+tagline = "Architecture and interior design for residential and commercial projects"
+website = "https://www.yourstudio.com"
+city = "Stockholm"
+founded = 2015
+specialties = ["residential housing", "commercial interiors", "sustainable renovation"]
+portfolio_url = "https://www.yourstudio.com/projects"
+booking_url = "https://www.yourstudio.com/meet"
+
+[sender]
+name = "Your Name"
+title = "Founding Partner"
+email = "you@yourstudio.com"
+phone = "+46 70 000 00 00"
+
+[compliance]
+# Shown in every email footer. Required by GDPR / ePrivacy for B2B outreach.
+postal_address = "Example Street 1, 111 22 Stockholm, Sweden"
+unsubscribe_text = "Not relevant? Reply \"unsubscribe\" and we will not contact you again."

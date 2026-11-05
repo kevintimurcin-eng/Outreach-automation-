@@ -1,21 +1,26 @@
-# Your firm's details. Every template can use these as {{ company.<field> }}.
+# Your firm's details (from nordicgroup.es). Every template can use these as {{ company.<field> }}.
 [company]
-name = "Your Architecture Studio"
-tagline = "Architecture and interior design for residential and commercial projects"
-website = "https://www.yourstudio.com"
-city = "Stockholm"
-founded = 2015
-specialties = ["residential housing", "commercial interiors", "sustainable renovation"]
-portfolio_url = "https://www.yourstudio.com/projects"
-booking_url = "https://www.yourstudio.com/meet"
+name = "Nordic Group"
+tagline = "Scandinavian architecture, interior design and construction on the Costa del Sol"
+website = "https://nordicgroup.es"
+city = "Marbella"
+# founded = 2015   # uncomment and set to add "since <year>" to the introduction
+specialties = [
+  "design & architecture",
+  "construction & renovation with our own in-house team",
+  "bespoke kitchens & carpentry",
+  "investment & real-estate development support",
+]
+portfolio_url = "https://nordicgroup.es/projects/"
+booking_url = "https://nordicgroup.es/contact/"
 
 [sender]
-name = "Your Name"
-title = "Founding Partner"
-email = "you@yourstudio.com"
-phone = "+46 70 000 00 00"
+name = "Kevin Timurcin"
+title = "CEO & Founder"
+email = "info@nordicda.com"      # change to the mailbox you will send from
+phone = "+34 633 90 40 60"
 
 [compliance]
-# Shown in every email footer. Required by GDPR / ePrivacy for B2B outreach.
-postal_address = "Example Street 1, 111 22 Stockholm, Sweden"
+# Shown in every email footer. Required by GDPR / Spanish LSSI.
+postal_address = "Nordic Group · Av. de las Naciones Unidas, 51-B, 29660 Marbella, Málaga, Spain"
 unsubscribe_text = "Not relevant? Reply \"unsubscribe\" and we will not contact you again."

@@ -19,8 +19,8 @@ sender details and postal address. Edit the wording in **`templates/`**.
 
 ## Usage
 ```bash
-# 1. Find target companies (any wording works, e.g. "hotel groups in Madrid")
-python -m outreach find-companies "property developers in Stockholm" --segment developer
+# 1. Find target companies (any wording works, e.g. "real estate investors Costa del Sol")
+python -m outreach find-companies "property developers in Marbella" --segment developer
 
 # 2. Find decision-maker emails for those companies' websites
 python -m outreach find-emails --max-domains 10
@@ -44,7 +44,7 @@ goes in `data/suppression.csv` and is never emailed again.
 ### Templates
 `templates/*.j2` are Jinja2. The first line is `Subject: …`. Available fields:
 `lead.*` (any CSV column), `company.*`, `sender.*`, `compliance.*` from `company.toml`.
-The introduction adapts its pitch by `lead.segment` (`developer`, `hospitality`, `public`, other).
+The introduction adapts its pitch by `lead.segment` (`developer`, `investor`, `hospitality`, `public`, other).
 
 ### Using it with Claude
 In a Claude session with the Gmail connector, ask Claude to *"render the outbox and
@@ -52,7 +52,8 @@ create Gmail drafts"* – you then review and send from Gmail yourself.
 
 ## Rules for cold email (please read)
 - **Spain (LSSI art. 21) and Denmark require prior consent** for commercial email, even
-  to businesses. In Sweden and most other EU countries, B2B email to a work address is
+  to businesses. Since you are based in Spain, the safest route is to email generic company addresses
+  (info@, contact@) or people who have given consent. In Sweden and most other EU countries, B2B email to a work address is
   usually allowed under GDPR legitimate interest if it is relevant to the person's role.
   Check the rules for the recipient's country; when in doubt, use generic company
   addresses (info@, contact@) or get legal advice.

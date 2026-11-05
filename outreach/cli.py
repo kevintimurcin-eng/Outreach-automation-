@@ -93,8 +93,8 @@ def main(argv=None):
     sub = p.add_subparsers(dest="cmd", required=True)
 
     s = sub.add_parser("find-companies", help="Search Google Places for target companies")
-    s.add_argument("query", help='e.g. "property developers in Stockholm"')
-    s.add_argument("--segment", default="", help="developer | hospitality | public | ...")
+    s.add_argument("query", help='e.g. "property developers in Marbella"')
+    s.add_argument("--segment", default="", help="developer | investor | hospitality | public | ...")
     s.add_argument("--max", type=int, default=20)
     s.set_defaults(fn=cmd_find_companies)
 

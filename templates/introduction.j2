@@ -3,10 +3,12 @@ Subject: {{ company.name }} – architecture partner for {{ lead.company or "you
 
 Hi {{ lead.first_name or "there" }},
 
-My name is {{ sender.name }}, {{ sender.title }} at {{ company.name }} – {{ company.tagline | lower }}, based in {{ company.city }}{% if company.founded %} since {{ company.founded }}{% endif %}.
+My name is {{ sender.name }}, {{ sender.title }} at {{ company.name }} – {{ company.tagline }}, based in {{ company.city }}{% if company.get('founded') %} since {{ company.founded }}{% endif %}.
 
 {% if lead.segment == "developer" -%}
 I'm reaching out because {{ lead.company or "your company" }} develops the kind of projects we love to work on. We help developers move from early feasibility studies to building permit with designs that are buildable, on budget and attractive to buyers and tenants.
+{%- elif lead.segment == "investor" -%}
+I'm reaching out because we support investors from acquisition to completion: we assess properties, design the project and deliver it with our own construction team – one partner, one budget, one timeline.
 {%- elif lead.segment == "hospitality" -%}
 I'm reaching out because we design hospitality spaces where the guest experience and the operating model fit together – from concept through to completed interiors.
 {%- elif lead.segment == "public" -%}
@@ -16,11 +18,11 @@ I'm reaching out because I think our work could be a good fit for {{ lead.compan
 {%- endif %}
 
 Our focus areas:
-{% for s in company.specialties %}  • {{ s | capitalize }}
+{% for s in company.specialties %}  • {{ s[0] | upper }}{{ s[1:] }}
 {% endfor %}
 You can see a selection of our projects here: {{ company.portfolio_url }}
 
-Would you be open to a short 20-minute call to hear about your plans for the coming year? You can pick a time that suits you here: {{ company.booking_url }}
+Would you be open to a short 20-minute call to hear about your plans for the coming year? You can reach me directly by replying, or via {{ company.booking_url }}
 
 Best regards,
 {{ sender.name }}
